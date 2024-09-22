@@ -9,7 +9,7 @@ def draw_puzzle(puzzle, width, height, scramble=None):
     else:
         canvas = Canvas(width=200 * width + 50, height=100 * height, sync_image_data=True)
 
-    image = Image.open('matt_and_steve.png')
+    image = Image.open('img/matt_and_steve.png')
 
     # Crop depending on puzzle aspect ratio
     desired_width_pixels = 100 * width
