@@ -10,14 +10,14 @@ import datetime
 
 width = 5
 height = 5
-maximum_repeated_shapes = 6
+maximum_repeated_shapes = 10
 
 V = generate_verification_matrix(width, height)
 
 
 def print_progress(elapsed, puzzle_count, duplicate_checked, solution_checked):
     print(f'\r{elapsed} - Tested {puzzle_count} puzzles. ', end='')
-    print(f'{duplicate_checked} had less than {maximum_repeated_shapes} repeated connection shapes, ', end='')
+    print(f'{duplicate_checked} had {maximum_repeated_shapes} or fewer repetitions of each connection shape, ', end='')
     print(f'{solution_checked} of those had no duplicate pieces.', end='')
 
 
@@ -72,6 +72,8 @@ def main(max_time=-1):
     print_progress(elapsed, puzzle_count, duplicate_checked, solution_checked)
     print()
     if puzzle_found is not None:
+        print('Found solution with the following puzzle vector: ')
+        print(puzzle_found[:,0])
         display(draw_puzzle(puzzle_found, width, height, scramble_found))
     else:
         print('Timed out without finding solution')
