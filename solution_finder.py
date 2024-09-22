@@ -2,6 +2,11 @@ from typing import List, Dict, Tuple
 import numpy as np
 
 
+def get_max_repeated_shapes(puzzle: np.array) -> int:
+    shape_type_count = [[int(s) for s in puzzle[:, 0]].count(i) for i in range(1, max(puzzle[:, 0]))]
+    return max(shape_type_count)
+
+
 def has_duplicate_pieces(puzzle: np.array) -> bool:
     pieces = []
     for i in range(0, len(puzzle), 4):
@@ -196,15 +201,13 @@ def count_solutions(
             required_side, required_shape = requirements[0]
 
             # Find all pieces with the required shape, and make sure we only consider pieces that are available
-            possible_pieces = [
-                (piece, side) for piece, side in shape_to_pieces_map[required_shape]
-                if piece in available_pieces
-            ]
+            possible_pieces = shape_to_pieces_map[required_shape]
 
             # Find the possible rotations for each possible piece
             options[neighbour_position] = []
             for possible_piece, side_number in possible_pieces:
-                options[neighbour_position].append((possible_piece, required_side - side_number))
+                if possible_piece in available_pieces:
+                    options[neighbour_position].append((possible_piece, required_side - side_number))
 
         # Place a piece in the position with the fewest options
         best_position = min(options, key=lambda position: len(options[position]))

@@ -3,13 +3,13 @@ from PIL import Image
 import numpy as np
 
 
-def draw_puzzle(puzzle, width, height, transformation=None):
-    if transformation is None:
+def draw_puzzle(puzzle, width, height, scramble=None):
+    if scramble is None:
         canvas = Canvas(width=100 * width, height=100 * height, sync_image_data=True)
     else:
         canvas = Canvas(width=200 * width + 50, height=100 * height, sync_image_data=True)
 
-    image = Image.open('mattandsteve.png')
+    image = Image.open('matt_and_steve.png')
 
     # Crop depending on puzzle aspect ratio
     desired_width_pixels = 100 * width
@@ -95,23 +95,23 @@ def draw_puzzle(puzzle, width, height, transformation=None):
             location_y = y * 100 + 35
             canvas.fill_circle(location_x, location_y, 3)
 
-    # If there is no transformation, we are done now
-    if transformation is None:
+    # If there is no scramble, we are done now
+    if scramble is None:
         return canvas
 
     # Else, map where each piece has gone to and whether it is rotated
-    transform_map = {}
+    scramble_map = {}
     for new_piece_number in range(width * height):
         column_set_to_one = min(
-            index for index, value in enumerate(transformation[new_piece_number * 4, :]) if value != 0)
+            index for index, value in enumerate(scramble[new_piece_number * 4, :]) if value != 0)
         old_piece_number = column_set_to_one // 4
         piece_rotation = column_set_to_one % 4
-        transform_map[new_piece_number] = (old_piece_number, piece_rotation)
+        scramble_map[new_piece_number] = (old_piece_number, piece_rotation)
 
     for x in range(width):
         for y in range(height):
             piece_number = y * width + x
-            old_piece_number, rotation = transform_map[piece_number]
+            old_piece_number, rotation = scramble_map[piece_number]
             image_piece = image_pieces[old_piece_number]
             image_piece = image_piece.rotate(90 * rotation)
             canvas.put_image_data(np.asarray(image_piece), (width + x) * 100 + 50, y * 100)
@@ -130,7 +130,7 @@ def draw_puzzle(puzzle, width, height, transformation=None):
     for x in range(width):
         for y in range(height):
             piece_number = y * width + x
-            old_piece_number, _ = transform_map[piece_number]
+            old_piece_number, _ = scramble_map[piece_number]
 
             center_x = 100 * (width + x) + 100
             center_y = 100 * y + 50
@@ -146,7 +146,7 @@ def draw_puzzle(puzzle, width, height, transformation=None):
         3: (0, 40)
     }
 
-    for index, value in enumerate((transformation @ puzzle)[:, 0]):
+    for index, value in enumerate((scramble @ puzzle)[:, 0]):
         if value == 0:
             continue
         piece_number = index // 4
@@ -169,7 +169,7 @@ def draw_puzzle(puzzle, width, height, transformation=None):
     for x in range(width):
         for y in range(height):
             piece_number = y * width + x
-            _, rotation = transform_map[piece_number]
+            _, rotation = scramble_map[piece_number]
 
             center_x = 100 * (width + x) + 100
             center_y = 100 * y + 50
