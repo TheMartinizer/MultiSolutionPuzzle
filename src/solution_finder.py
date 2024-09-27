@@ -1,10 +1,18 @@
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Dict
 import numpy as np
 
 
-def get_max_repeated_shapes(puzzle: np.array) -> int:
-    shape_type_count = [[int(s) for s in puzzle[:, 0]].count(i) for i in range(1, max(puzzle[:, 0]))]
-    return max(shape_type_count)
+def get_number_of_repeated_shapes(puzzle: np.array) -> Dict[int, int]:
+    connection_count = {}
+    for connection in puzzle[:,0]:
+        connection = int(connection)
+        if connection <= 0:
+            continue
+        if connection not in connection_count:
+            connection_count[connection] = 0
+
+        connection_count[connection] += 1
+    return connection_count
 
 
 def has_duplicate_pieces(puzzle: np.array) -> bool:

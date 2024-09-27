@@ -53,7 +53,8 @@ def main(max_time=-1):
         p = generate_solvable_puzzle(V, scramble)
         # Check how many of each connection type there is
 
-        if get_max_repeated_shapes(p) > maximum_repeated_shapes:
+        repeated_shapes = get_number_of_repeated_shapes(p)
+        if max(repeated_shapes.values()) > maximum_repeated_shapes:
             continue
 
         duplicate_checked += 1
@@ -78,5 +79,5 @@ def main(max_time=-1):
     else:
         print('Timed out without finding solution')
 
-
-main()
+    return puzzle_found, scramble_found
+best_puzzle, best_scramble = main()
